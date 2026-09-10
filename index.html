@@ -1,29 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>30 - Minutes Panic Attack</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQA Group Challenge</title>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:
+    linear-gradient(rgba(12, 25, 52, .78), rgba(29, 47, 82, .72)),
+    url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=2000&q=85')
+    center/cover fixed no-repeat;
+        color: #17233c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+    }
+
+    .container {
+        width: min(1100px, 100%);
+        text-align: center;
+    }
+
+    h1 {
+        margin: 0 0 8px;
+        font-size: clamp(30px, 5vw, 48px);
+        color: white;
+        text-shadow: 0 3px 18px rgba(0,0,0,.35);
+    }
+
+    .subtitle {
+        margin: 0 0 30px;
+        color: rgba(255,255,255,.88);
+        font-size: 17px;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .card {
+        height: 190px;
+        border: 0;
+        border-radius: 22px;
+        background: white;
+        box-shadow: 0 12px 30px rgba(45, 72, 120, .12);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: transform .25s, box-shadow .25s, opacity .25s;
+        font: inherit;
+    }
+
+    .card:hover:not(:disabled) {
+        transform: translateY(-7px) rotate(-1deg);
+        box-shadow: 0 18px 35px rgba(45, 72, 120, .20);
+    }
+
+    .card:disabled {
+        cursor: not-allowed;
+    }
+
+    .card.locked {
+        opacity: .28;
+        filter: grayscale(1);
+    }
+
+    .card.selected {
+        transform: scale(1.03);
+        box-shadow: 0 20px 45px rgba(45, 72, 120, .24);
+        outline: 4px solid #315efb;
+    }
+
+    .card-number {
+        position: absolute;
+        top: 14px;
+        left: 16px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #8a96aa;
+    }
+
+    .mystery {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .question {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: #315efb;
+        color: white;
+        display: grid;
+        place-items: center;
+        font-size: 34px;
+        font-weight: 800;
+    }
+
+    .mystery span {
+        font-weight: 700;
+        color: #3e4d69;
+    }
+
+    .task-panel {
+        display: none;
+        margin: 28px auto 0;
+        max-width: 850px;
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: 0 16px 45px rgba(45, 72, 120, .16);
+        animation: appear .35s ease;
+    }
+
+    .task-panel.show { display: block; }
+
+    .task-group {
+        display: inline-block;
+        background: #eaf0ff;
+        color: #315efb;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 800;
+        margin-bottom: 14px;
+    }
+
+    .task {
+        font-size: clamp(21px, 3vw, 30px);
+        line-height: 1.35;
+        font-weight: 700;
+        margin: 8px 0 20px;
+    }
+
+    .instructions {
+        color: #65728a;
+        margin-bottom: 22px;
+    }
+
+    .reset {
+        border: 0;
+        background: #17233c;
+        color: white;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .reset:hover { background: #2b3c60; }
+
+    .status {
+        margin-top: 22px;
+        font-weight: 700;
+        color: #65728a;
+    }
+
+    @keyframes appear {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 750px) {
+        .cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+        body { padding: 18px; }
+        .cards { grid-template-columns: 1fr; }
+        .card { height: 150px; }
+    }
+</style>
 </head>
 <body>
 
 <div class="container">
-<div class="tenor-gif-embed" data-postid="4920941" data-share-method="host" data-aspect-ratio="1.33333" data-width="100%"><a href="https://tenor.com/view/spongebob-squarepants-spongebob-panic-chaos-fire-gif-4920941">Spongebob Squarepants Panic GIF</a>from <a href="https://tenor.com/search/spongebob+squarepants-gifs">Spongebob Squarepants GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
-  <h1 class="title">MAT Attack</h1>
-  <p class="subtitle">Submit your assignment before time runs out!</p>
+    <h1>SQA Group Challenge</h1>
+    <p class="subtitle">Nine mystery cards. One choice. Choose wisely!</p>
 
-  <h2 id="timer">45:00</h2>
+    <div class="cards" id="cards"></div>
 
-  <a href="quiz01" download target="_blank">
-  <button class="download-btn">📄 Begin the Suffering</button>
-</a>
+    <div class="status" id="status">
+        Any group can choose one card. Once a card is selected, the remaining cards are locked.
+    </div>
 
-  <button id="submitBtn">End My Suffering</button>
-
-  <div id="notification" class="hidden"></div>
+    <div class="task-panel" id="taskPanel">
+        <div class="task-group" id="groupName"></div>
+        <div class="task" id="taskText"></div>
+        <div class="instructions">
+            Discuss your answer with your group and prepare a short presentation.
+        </div>
+    </div>
 </div>
 
+<script>
+const tasks = [
+    {
+        group: "GROUP 1",
+        task: "Can you find suitable software activities and sort them into QA, QC and Testing? Can you explain two tricky choices?"
+    },
+    {
+        group: "GROUP 2",
+        task: "Are we building the product RIGHT, or are we building the RIGHT product? Can you prove the difference using a real software example?"
+    },
+    {
+        group: "GROUP 3",
+        task: "A small developer mistake eventually causes a customer-facing failure. Can you trace the complete chain from Fault → Defect → Error → Failure?"
+    },
+    {
+        group: "GROUP 4",
+        task: "Can software be tested without running it? Which activities are Static Testing and which are Dynamic Testing?"
+    },
+    {
+        group: "GROUP 5",
+        task: "Can you design 8 test cases for an online login system using Input + Expected Outcome?"
+    },
+    {
+        group: "GROUP 6",
+        task: "You can test only 5 inputs. How will you choose the BEST 5? Can you justify your choices?"
+    },
+    {
+        group: "GROUP 7",
+        task: "You found four different testing situations. Can you identify whether each is Unit, Integration, System, or Acceptance Testing?"
+    },
+    {
+        group: "GROUP 8",
+        task: "Two testers test the same program—but one can see the code and the other cannot. How will their testing be different?"
+    },
+    {
+        group: "GROUP 9",
+        task: "A software system has 100 customer complaints of different types. Which SQC tool would help you decide what problem to attack first—and why?"
+    }
+];
 
-  <script src="script.js"></script>
+const cardsContainer = document.getElementById("cards");
+const taskPanel = document.getElementById("taskPanel");
+const groupName = document.getElementById("groupName");
+const taskText = document.getElementById("taskText");
+const status = document.getElementById("status");
+
+function createCards() {
+    cardsContainer.innerHTML = "";
+
+    tasks.forEach((item, index) => {
+        const card = document.createElement("button");
+        card.className = "card";
+        card.innerHTML = `
+            <div class="card-number">CARD ${index + 1}</div>
+            <div class="mystery">
+                <div class="question">?</div>
+                <span>Mystery Challenge</span>
+            </div>
+        `;
+
+        card.addEventListener("click", () => selectCard(card, item));
+        cardsContainer.appendChild(card);
+    });
+}
+
+function selectCard(selectedCard, item) {
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach(card => {
+        card.disabled = true;
+        if (card !== selectedCard) card.classList.add("locked");
+    });
+
+    selectedCard.classList.add("selected");
+
+    groupName.textContent = item.group;
+    taskText.textContent = item.task;
+    taskPanel.classList.add("show");
+
+    status.textContent = `${item.group} selected a challenge! 🔒 All other cards are locked.`;
+}
+
+
+createCards();
+</script>
+
 </body>
 </html>
