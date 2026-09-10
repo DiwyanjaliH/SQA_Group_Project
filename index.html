@@ -270,6 +270,7 @@ function createCards() {
 }
 
 function selectCard(selectedCard, item) {
+    challengeStarted = true;
     const cards = document.querySelectorAll(".card");
 
     cards.forEach(card => {
@@ -288,6 +289,21 @@ function selectCard(selectedCard, item) {
 
 
 createCards();
+</script>
+
+
+<script>
+let challengeStarted = false;
+window.addEventListener("beforeunload", function(event) {
+    if (challengeStarted) { event.preventDefault(); event.returnValue = ""; }
+});
+document.addEventListener("keydown", function(event) {
+    const key = event.key.toLowerCase();
+    if (event.key === "F5" || ((event.ctrlKey || event.metaKey) && key === "r")) {
+        event.preventDefault();
+        alert("Refresh is disabled during the SQA Group Challenge.");
+    }
+});
 </script>
 
 </body>
