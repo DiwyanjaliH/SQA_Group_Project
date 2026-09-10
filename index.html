@@ -256,6 +256,7 @@ function createCards() {
     tasks.forEach((item, index) => {
         const card = document.createElement("button");
         card.className = "card";
+        card.dataset.index = index;
         card.innerHTML = `
             <div class="card-number">CARD ${index + 1}</div>
             <div class="mystery">
@@ -289,6 +290,29 @@ function selectCard(selectedCard, item) {
 
 
 createCards();
+
+const savedItem = localStorage.getItem("sqaChallengeSelected");
+const savedIndex = localStorage.getItem("sqaChallengeSelectedIndex");
+
+if (savedItem && savedIndex !== null) {
+    const item = JSON.parse(savedItem);
+    const cards = document.querySelectorAll(".card");
+    const selectedCard = cards[Number(savedIndex)];
+
+    if (selectedCard) {
+        challengeStarted = true;
+        cards.forEach(card => {
+            card.disabled = true;
+            if (card !== selectedCard) card.classList.add("locked");
+        });
+
+        selectedCard.classList.add("selected");
+        groupName.textContent = item.group;
+        taskText.textContent = item.task;
+        taskPanel.classList.add("show");
+        status.textContent = `${item.group} selected a challenge! 🔒 All other cards are locked.`;
+    }
+}
 </script>
 
 
